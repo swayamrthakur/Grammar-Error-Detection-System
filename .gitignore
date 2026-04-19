@@ -1,0 +1,56 @@
+# ── Virtual Environment ──
+.venv/
+venv/
+env/
+
+# ── Python Cache ──
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ── Model Files (too large for GitHub) ──
+Backend/bert_ged_model/
+Backend/bert_checkpoints/
+Backend/model.pkl
+Backend/vectorizer.pkl
+Backend/model_bundle.pkl
+model_bundle.pkl
+
+# ── Large Data Files ──
+Data/official-2014.combined.m2
+Data/wi+locness/
+Data/wi+locness_v2.1.bea19.tar.gz
+Data/wi_dataset.csv
+Data/wi_b_dataset.csv
+Data/wi_c_dataset.csv
+Data/wi_abc_dataset.csv
+Data/cola_dataset.csv
+Data/dataset.csv
+Data/generated_dataset.csv
+Data/final_dataset.csv
+
+# ── Logs ──
+Backend/logs/
+*.log
+
+# ── OS Files ──
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDE ──
+.vscode/settings.json
+.idea/
+*.suo
+*.user
+
+# ── Environment Variables ──
+.env
+.env.local
+*.env
+
+# ── Jupyter ──
+.ipynb_checkpoints/
+*.ipynb
