@@ -1,21 +1,39 @@
-// 🔗 Connect to Flask backend
+// 🔗 API Base URL
+const API_BASE = "https://swayamt-grammar-error-detection-api.hf.space";
+
+// 🔗 Connect to Flask backend - ML Detection
 async function getMLPrediction(text) {
   try {
-    const res = await fetch("http://127.0.0.1:5000/predict", {
+    const res = await fetch(`${API_BASE}/predict`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ text })
     });
-
     return await res.json();
   } catch (error) {
     console.error("ML API error:", error);
-    return { prediction: "Error" };
+    return { prediction: "Error", confidence: 0 };
   }
 }
 
+// 🔗 Connect to Flask backend - ML Correction
+async function getMLCorrection(text) {
+  try {
+    const res = await fetch(`${API_BASE}/correct`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ text })
+    });
+    return await res.json();
+  } catch (error) {
+    console.error("ML Correction API error:", error);
+    return { correction: text };
+  }
+}
 
 // 🧠 Main analysis function
 async function analyzeText() {
@@ -89,7 +107,6 @@ async function analyzeText() {
     if (matchedRule) {
       errors++;
       outputWords[i] = corrected;
-
       htmlOutput += `<span class="error" data-msg="${matchedRule.type}: ${matchedRule.message}">
         ${word}
       </span> `;
@@ -105,11 +122,18 @@ async function analyzeText() {
   document.getElementById("errors").innerText = errors;
   document.getElementById("words").innerText = words.length;
 
-  // ✅ Corrected sentence
-  const correctedText = outputWords.join(" ");
+  // 🤖 ML Prediction + Correction (runs in parallel for speed)
+  const [mlResult, mlCorrection] = await Promise.all([
+    getMLPrediction(text),
+    getMLCorrection(text)
+  ]);
 
+  // ✅ Show ML prediction result
+  document.getElementById("ml").innerText =
+    `${mlResult.prediction} (${Math.round((mlResult.confidence || 0) * 100)}% confidence)`;
+
+  // ✅ Show ML corrected sentence
   let correctedDiv = document.getElementById("correctedText");
-
   if (!correctedDiv) {
     correctedDiv = document.createElement("div");
     correctedDiv.id = "correctedText";
@@ -118,9 +142,6 @@ async function analyzeText() {
     document.getElementById("outputText").after(correctedDiv);
   }
 
-  correctedDiv.innerHTML = `<strong>Corrected:</strong> ${correctedText}`;
-
-  // 🤖 ML Prediction (FINAL INTEGRATION)
-  const mlResult = await getMLPrediction(text);
-  document.getElementById("ml").innerText = mlResult.prediction;
+  const correctedSentence = mlCorrection.correction || outputWords.join(" ");
+  correctedDiv.innerHTML = `<strong>Corrected:</strong> ${correctedSentence}`;
 }
