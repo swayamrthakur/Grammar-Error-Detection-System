@@ -25,8 +25,7 @@ CORS(app)
 # ─────────────────────────────────────────────
 # 0. Path setup
 # ─────────────────────────────────────────────
-BASE_DIR   = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL_PATH = os.path.join(BASE_DIR, "Backend", "bert_ged_model")
+MODEL_PATH = "Swayamt/grammar-error-detection"
 
 # ─────────────────────────────────────────────
 # 1. Load RoBERTa model
